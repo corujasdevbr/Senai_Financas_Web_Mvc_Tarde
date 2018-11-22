@@ -23,8 +23,11 @@ namespace Senai.Financas.Mvc.Web.Controllers
             usuarioModel.DataNascimento = DateTime.Parse(form["dataNascimento"]);
             usuarioModel.Senha = form["senha"];
 
+            //Aplicando o ID
+            usuarioModel.ID = System.IO.File.ReadAllLines("usuarios.csv").Length + 1;
+
             using(StreamWriter sw = new StreamWriter("usuarios.csv",true)){
-                sw.WriteLine($"{usuarioModel.Nome};{usuarioModel.Email};{usuarioModel.Senha};{usuarioModel.DataNascimento}");
+                sw.WriteLine($"{usuarioModel.ID};{usuarioModel.Nome};{usuarioModel.Email};{usuarioModel.Senha};{usuarioModel.DataNascimento}");
             }
 
             ViewBag.Mensagem = "Usuário Cadastrado";
@@ -65,6 +68,30 @@ namespace Senai.Financas.Mvc.Web.Controllers
             }
 
             return View();
+        }
+
+        /// <summary>
+        /// Lista todos os usuários cadastrados no sistema
+        /// </summary>
+        /// <returns>A view da listagem de usuário</returns>
+        [HttpGet]
+        public IActionResult Listar()
+        {
+            UsuarioRepositorio rep = new UsuarioRepositorio();
+
+            //Buscando os dados do rep. e aplicando no view bag
+            //ViewBag.Usuarios = rep.Listar();
+            ViewData["Usuarios"] = rep.Listar();
+            
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Excluir(int id)
+        {
+            UsuarioRepositorio rep = new UsuarioRepositorio();
+            rep.Excluir(id);
+            return RedirectToAction("Listar");
         }
 
 
