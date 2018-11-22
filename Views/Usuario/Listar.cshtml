@@ -1,5 +1,10 @@
 @using Senai.Financas.Mvc.Web.Models;
+@{
+    Layout= "MasterPageUsuario";
+}
 <h3>Listagem de usuários</h3>
+
+@TempData["Mensagem"]
 
 <table>
     <thead>
@@ -24,6 +29,7 @@
                 </td>
                 <td>
                     <a href="/Usuario/Excluir?id=@usuario.ID">Excluir</a>
+                    <a href="/Usuario/Editar?id=@usuario.ID">Editar</a>
                 </td>
             </tr>
         }

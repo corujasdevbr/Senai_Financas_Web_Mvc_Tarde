@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Senai.Financas.Mvc.Web.Models;
+using Senai_Financas_Web_Mvc_Tarde.Interfaces;
 
 namespace Senai.Financas.Mvc.Web.Repositorios
 {
-    public class UsuarioRepositorio
+    public class UsuarioRepositorio : IUsuario
     {
         public UsuarioModel BuscarPorEmailESenha(string email, string senha)
         {
@@ -85,6 +86,72 @@ namespace Senai.Financas.Mvc.Web.Repositorios
             }  
 
             File.WriteAllLines("usuarios.csv", linhas);
+        }
+
+        public UsuarioModel Cadastrar(UsuarioModel usuario)
+        {
+            if(File.Exists("usuarios.csv")){
+                //Aplicando o ID
+                usuario.ID = System.IO.File.ReadAllLines("usuarios.csv").Length + 1;
+            } else {
+                usuario.ID = 1;
+            }
+
+            using(StreamWriter sw = new StreamWriter("usuarios.csv",true)){
+                sw.WriteLine($"{usuario.ID};{usuario.Nome};{usuario.Email};{usuario.Senha};{usuario.DataNascimento}");
+            }
+
+            return usuario;
+        }
+
+        public UsuarioModel Editar(UsuarioModel usuario)
+        {
+            string[] linhas = System.IO.File.ReadAllLines("usuarios.csv");
+
+            for (int i = 0; i < linhas.Length; i++)
+            {
+                if(string.IsNullOrEmpty(linhas[i])){
+                    continue;
+                }
+
+                string[] dados = linhas[i].Split(";");
+
+                if(dados[0] == usuario.ID.ToString()){
+                    linhas[i] = $"{usuario.ID};{usuario.Nome};{usuario.Email};{usuario.Senha};{usuario.DataNascimento}";
+                    break;
+                }
+            }
+
+            System.IO.File.WriteAllLines("usuarios.csv", linhas);
+
+            return usuario;
+        }
+
+        public UsuarioModel BuscarPorId(int id)
+        {
+            string[] linhas = System.IO.File.ReadAllLines("usuarios.csv");
+
+            for (int i = 0; i < linhas.Length; i++)
+            {
+                if(string.IsNullOrEmpty(linhas[i])){
+                    continue;
+                }
+
+                string[] dados = linhas[i].Split(';');
+
+                if(dados[0] == id.ToString()){
+                    UsuarioModel usuario = new UsuarioModel();
+                    usuario.ID = int.Parse(dados[0]);
+                    usuario.Nome = dados[1];
+                    usuario.Email = dados[2];
+                    usuario.Senha = dados[3];
+                    usuario.DataNascimento = DateTime.Parse(dados[4]);
+
+                    return usuario;
+                }
+            }
+
+            return null;
         }
     }
 }

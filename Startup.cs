@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Senai.Financas.Mvc.Web.Repositorios;
+using Senai_Financas_Web_Mvc_Tarde.Interfaces;
 
 namespace Senai.Financas.Mvc.Web
 {
@@ -22,6 +24,7 @@ namespace Senai.Financas.Mvc.Web
             services.AddSession(
                 options => options.IdleTimeout = TimeSpan.FromMinutes(30)
             );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
