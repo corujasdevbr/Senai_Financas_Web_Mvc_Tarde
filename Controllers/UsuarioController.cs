@@ -11,7 +11,6 @@ namespace Senai.Financas.Mvc.Web.Controllers
     public class UsuarioController : Controller
     {
         
-
         [HttpGet]
         public ActionResult Cadastro(){
             return View();
@@ -19,14 +18,15 @@ namespace Senai.Financas.Mvc.Web.Controllers
 
         [HttpPost]
         public ActionResult Cadastro(IFormCollection form){
-            UsuarioModel usuarioModel = new UsuarioModel();
+                        
+            UsuarioModel usuarioModel = new UsuarioModel(
+                                nome: form["nome"],
+                                email: form["email"],
+                                senha: form["senha"],
+                                dataNascimento: DateTime.Parse(form["dataNascimento"]) );
 
-            usuarioModel.Nome = form["nome"];
-            usuarioModel.Email = form["email"];
-            usuarioModel.DataNascimento = DateTime.Parse(form["dataNascimento"]);
-            usuarioModel.Senha = form["senha"];
-
-            _usuario.Cadastrar(usuarioModel);
+            UsuarioRepositorio usuarioRepositorio = new UsuarioRepositorio();
+            usuarioRepositorio.Cadastrar(usuarioModel);
 
             ViewBag.Mensagem = "Usuário Cadastrado";
 
@@ -117,12 +117,14 @@ namespace Senai.Financas.Mvc.Web.Controllers
     
         [HttpPost]
         public IActionResult Editar(IFormCollection form){
-            UsuarioModel usuario = new UsuarioModel();
-            usuario.ID = int.Parse(form["id"]);
-            usuario.Nome = form["nome"];
-            usuario.Email = form["email"];
-            usuario.Senha = form["senha"];
-            usuario.DataNascimento = DateTime.Parse(form["dataNascimento"]);
+            
+            UsuarioModel usuario = new UsuarioModel(
+                id: int.Parse(form["id"]),
+                nome: form["nome"],
+                email: form["email"],
+                senha: form["senha"],
+                dataNascimento: DateTime.Parse(form["dataNascimento"])
+            );
 
             UsuarioRepositorio usuarioRepositorio = new UsuarioRepositorio();
             usuarioRepositorio.Editar(usuario);
