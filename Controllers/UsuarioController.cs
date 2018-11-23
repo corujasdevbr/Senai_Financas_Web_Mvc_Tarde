@@ -41,11 +41,8 @@ namespace Senai.Financas.Mvc.Web.Controllers
         {
             
             //Pega os dados do POST
-            UsuarioModel usuario = new UsuarioModel
-            {
-                Email = form["email"],
-                Senha = form["senha"]
-            };
+            UsuarioModel usuario = new UsuarioModel(email: form["email"],senha: form["senha"]);
+            
 
             //Verificar se o usuário possuí acesso para realizazr login
             UsuarioRepositorio usuarioRep = new UsuarioRepositorio();
