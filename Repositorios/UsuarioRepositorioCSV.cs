@@ -6,7 +6,7 @@ using Senai_Financas_Web_Mvc_Tarde.Interfaces;
 
 namespace Senai.Financas.Mvc.Web.Repositorios
 {
-    public class UsuarioRepositorio : IUsuario
+    public class UsuarioRepositorioCSV : IUsuario
     {
         public UsuarioModel BuscarPorEmailESenha(string email, string senha)
         {

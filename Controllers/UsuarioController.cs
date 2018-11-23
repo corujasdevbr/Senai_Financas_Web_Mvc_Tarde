@@ -5,11 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 using Senai.Financas.Mvc.Web.Models;
 using Senai.Financas.Mvc.Web.Repositorios;
 using Senai_Financas_Web_Mvc_Tarde.Interfaces;
+using Senai_Financas_Web_Mvc_Tarde.Repositorios;
 
 namespace Senai.Financas.Mvc.Web.Controllers
 {
     public class UsuarioController : Controller
     {
+        public IUsuario UsuarioRepositorio {get; set;}
+
+        //Construtor da classe
+        public UsuarioController()
+        {
+            UsuarioRepositorio = new UsuarioRepositorioSerializacao();
+        }
+
         
         [HttpGet]
         public ActionResult Cadastro(){
@@ -25,8 +34,7 @@ namespace Senai.Financas.Mvc.Web.Controllers
                                 senha: form["senha"],
                                 dataNascimento: DateTime.Parse(form["dataNascimento"]) );
 
-            UsuarioRepositorio usuarioRepositorio = new UsuarioRepositorio();
-            usuarioRepositorio.Cadastrar(usuarioModel);
+            UsuarioRepositorio.Cadastrar(usuarioModel);
 
             ViewBag.Mensagem = "Usuário Cadastrado";
 
@@ -44,10 +52,8 @@ namespace Senai.Financas.Mvc.Web.Controllers
             UsuarioModel usuario = new UsuarioModel(email: form["email"],senha: form["senha"]);
             
 
-            //Verificar se o usuário possuí acesso para realizazr login
-            UsuarioRepositorio usuarioRep = new UsuarioRepositorio();
-            
-            UsuarioModel usuarioModel = usuarioRep.BuscarPorEmailESenha(usuario.Email, usuario.Senha);
+            //Verificar se o usuário possuí acesso para realizazr login            
+            UsuarioModel usuarioModel = UsuarioRepositorio.BuscarPorEmailESenha(usuario.Email, usuario.Senha);
 
             if (usuarioModel != null)
             {
@@ -72,11 +78,11 @@ namespace Senai.Financas.Mvc.Web.Controllers
         [HttpGet]
         public IActionResult Listar()
         {
-            UsuarioRepositorio rep = new UsuarioRepositorio();
+            //UsuarioRepositorio rep = new UsuarioRepositorio();
 
             //Buscando os dados do rep. e aplicando no view bag
             //ViewBag.Usuarios = rep.Listar();
-            ViewData["Usuarios"] = rep.Listar();
+            ViewData["Usuarios"] = UsuarioRepositorio.Listar();
             
             return View();
         }
@@ -84,8 +90,7 @@ namespace Senai.Financas.Mvc.Web.Controllers
         [HttpGet]
         public IActionResult Excluir(int id)
         {
-            UsuarioRepositorio rep = new UsuarioRepositorio();
-            rep.Excluir(id);
+            UsuarioRepositorio.Excluir(id);
 
             TempData["Mensagem"] = "Usuário excluído";
 
@@ -100,8 +105,7 @@ namespace Senai.Financas.Mvc.Web.Controllers
                 return RedirectToAction("Listar");
             }
 
-            UsuarioRepositorio usuarioRepositorio = new UsuarioRepositorio();
-            UsuarioModel usuario = usuarioRepositorio.BuscarPorId(id);
+            UsuarioModel usuario = UsuarioRepositorio.BuscarPorId(id);
 
             if(usuario != null){
                 ViewBag.Usuario = usuario;
@@ -123,8 +127,7 @@ namespace Senai.Financas.Mvc.Web.Controllers
                 dataNascimento: DateTime.Parse(form["dataNascimento"])
             );
 
-            UsuarioRepositorio usuarioRepositorio = new UsuarioRepositorio();
-            usuarioRepositorio.Editar(usuario);
+            UsuarioRepositorio.Editar(usuario);
 
             TempData["Mensagem"] = "Usuário editado";
 

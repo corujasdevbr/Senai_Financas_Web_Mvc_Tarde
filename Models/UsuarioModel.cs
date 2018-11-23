@@ -2,6 +2,7 @@ using System;
 
 namespace Senai.Financas.Mvc.Web.Models
 {
+    [Serializable] //Atributo que define que a classe pode ser serializada
     public class UsuarioModel
     {
         public int ID { get; set; }
